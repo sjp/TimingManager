@@ -1,0 +1,12 @@
+{
+    "name": "TimingManager",
+    "description": "Animation Sequences in JavaScript",
+    "version": "0.1",
+    "url": "http://github.com/sjp/TimingManager",
+    "logo": "",
+    "options": {
+        "linkNatives": "true",        
+        "paths": ["."],
+        "outdir": "./docs"
+    }
+}

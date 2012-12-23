@@ -1,9 +1,16 @@
 /**
+ * Consumes timing information and runs handlers bound to animation
+ * labels.
+ *
  * @author Simon Potter
  * @licence GPL-2
+ * @class TimingManager
  * @constructor
- * @param {Array.<Object>|Object} timingInfo The timing information exported by the animaker package
- * @param {string=} timeUnit Determine what time units the timing information exported from animaker refers to
+ * @param {Array|Object} timingInfo Timing information, as
+ * exported by the [animaker package](https://github.com/pmur002/animaker) in [R](http://www.r-project.org/). For more information, refer to `?export` in R once animaker has loaded.
+ * @param {String} [timeUnit="ms"] Determine what time units the
+ * timing information exported from animaker refers to. Must be one of
+ * `"ms"` (milliseconds), `"s"` (seconds), or `"m"` (minutes).
  */
 var TimingManager = function(timingInfo, timeUnit) {
     // If we've just exported a single animation, force it
@@ -34,7 +41,7 @@ var TimingManager = function(timingInfo, timeUnit) {
     /**
      * Registers an action to an animation
      * @param {Object} fns An object where the keys are the labels for an animation, and the values are a function to register as an action to that animation
-     * @param {boolean=} overwrite Allows us to overwrite existing actions for animations
+     * @param {Boolean} [overwrite=true] Allows us to overwrite existing actions for animations.
      */
     this.register = function(fns, overwrite) {
         for (var f in fns) {
@@ -51,7 +58,9 @@ var TimingManager = function(timingInfo, timeUnit) {
 
     /**
      * Plays all animations associated with actions
-     * @param {number=} t An optional delay (in 'timeUnit's) to add to the entire animation
+     *
+     * @method play
+     * @param {Number} [t=0] An optional delay (in `timeUnit`s) to add to the entire animation.
      */
     this.play = function(t) {
         ensureNonEmpty();
@@ -69,7 +78,9 @@ var TimingManager = function(timingInfo, timeUnit) {
 
     /**
      * Returns all of the timing information about the frames that are to be played at a given time.
-     * @param {number=} t The time (in 'ms') to select an animation from
+     *
+     * @method frameTiming
+     * @param {Number} [t=0] The time in *milliseconds* to select an animation from
      * @return {Array} A list of matching animations to play at the current time
      */
     this.frameTiming = function(t) {
@@ -82,8 +93,10 @@ var TimingManager = function(timingInfo, timeUnit) {
 
     /**
      * Plays all animations associated with actions at a given rate per second.
-     * @param {number=} fps How many frames per second are going to be drawn. By default this is 10.
-     * @param {number=} t An optional delay (in 'timeUnit's) to add to the entire animation
+     *
+     * @method frameApply
+     * @param {Number} [fps=10] How many frames per second are going to be drawn. By default this is 10.
+     * @param {Number} [t=0] An optional delay (in `timeUnit`s) to add to the entire animation
      */
     this.frameApply = function(fps, t) {
         ensureNonEmpty();
