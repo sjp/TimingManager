@@ -1,4 +1,4 @@
-# TimingManager: A library for managing animation timing information
+# TimingManager: A Library for Managing Animation Timing Information
 
 ## Introduction
 
@@ -8,6 +8,9 @@ This JavaScript library is aimed to work in conjunction with the
 [animaker](https://github.com/pmur002/animaker) package, a [technical
 report](http://www.stat.auckland.ac.nz/~paul/Reports/animaker/animaker.html)
 describes it.
+
+*Note: [Underscore](http://underscorejs.org) is a required
+ dependency.*
 
 It has three main responsibilities:
 
