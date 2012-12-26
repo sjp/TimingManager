@@ -41,7 +41,7 @@ var TimingManager = function(timingInfo, timeUnit) {
     /**
      * Registers an action to an animation
      * @param {Object} fns An object where the keys are the labels for an animation, and the values are a function to register as an action to that animation
-     * @param {Boolean} [overwrite=true] Allows us to overwrite existing actions for animations.
+     * @param {Boolean} [overwrite=false] Allows us to overwrite existing actions for animations.
      */
     this.register = function(fns, overwrite) {
         for (var f in fns) {
