@@ -1,9 +1,12 @@
+/*
+ * This code is licensed under the GPL-2 licence.
+ */
+
 /**
  * Consumes timing information and runs handlers bound to animation
  * labels.
  *
  * @author Simon Potter
- * @licence GPL-2
  * @class TimingManager
  * @constructor
  * @param {Array|Object} timingInfo Timing information, as
@@ -26,6 +29,8 @@ var TimingManager = function(timingInfo, timeUnit) {
 
     // Where all our animation actions will be stored
     var callbacks = {};
+    // When playing back, store promises to display here
+    var promises = [];
 
     // Converts a unit of time to milliseconds
     var toMs = function(t) {
@@ -40,6 +45,8 @@ var TimingManager = function(timingInfo, timeUnit) {
 
     /**
      * Registers an action to an animation
+     *
+     * @method register
      * @param {Object} fns An object where the keys are the labels for an animation, and the values are a function to register as an action to that animation
      * @param {Boolean} [overwrite=false] Allows us to overwrite existing actions for animations.
      */
@@ -67,13 +74,28 @@ var TimingManager = function(timingInfo, timeUnit) {
         t = t || 0; // Default to 0 ms
         _.each(timingInfo, function(anim) {
             if (callbacks[anim.label]) {
-                _.delay(callbacks[anim.label],
-                        t + toMs(anim.start),
-                        anim);
+                promises.push(Promise.delay(t + toMs(anim.start))
+                    .cancellable()
+                    .then(function() {
+                        callbacks[anim.label](anim);
+                    }));
             } else {
                 console.warn("Ignoring playback of animation: " + anim.label);
             }
         });
+        Promise.all(promises);
+    };
+
+    /**
+     * Cancels all pending animations that are queued by the timing manager.
+     *
+     * @method cancel
+     */
+    this.cancel = function() {
+        _.each(promises, function(p) {
+            p.cancel("User initiated animation cancellation");
+        });
+        promises = [];
     };
 
     /**
@@ -119,7 +141,11 @@ var TimingManager = function(timingInfo, timeUnit) {
         // Do the playback after a delay in ms
         var playFrame = function(anim, t) {
             if (callbacks[anim.label]) {
-                _.delay(callbacks[anim.label], t, anim);
+                promises.push(Promise.delay(t)
+                    .cancellable()
+                    .then(function() {
+                        callbacks[anim.label](anim);
+                    }));
             } else {
                 console.warn("Ignoring playback of animation: " + anim.label);
             }
@@ -139,5 +165,7 @@ var TimingManager = function(timingInfo, timeUnit) {
                 _.each(currentTiming, singleTiming(i));
             }
         }
+
+        Promise.all(promises);
     };
 };
