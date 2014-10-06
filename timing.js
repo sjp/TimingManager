@@ -78,6 +78,9 @@ var TimingManager = function(timingInfo, timeUnit) {
                     .cancellable()
                     .then(function() {
                         callbacks[anim.label](anim);
+                    })
+                    .catch(Promise.CancellationError, function(e) {
+                        e = null;
                     }));
             } else {
                 console.warn("Ignoring playback of animation: " + anim.label);
@@ -93,7 +96,7 @@ var TimingManager = function(timingInfo, timeUnit) {
      */
     this.cancel = function() {
         _.each(promises, function(p) {
-            p.cancel("User initiated animation cancellation");
+            p.cancel();
         });
         promises = [];
     };
@@ -145,6 +148,9 @@ var TimingManager = function(timingInfo, timeUnit) {
                     .cancellable()
                     .then(function() {
                         callbacks[anim.label](anim);
+                    })
+                    .catch(Promise.CancellationError, function(e) {
+                        e = null;
                     }));
             } else {
                 console.warn("Ignoring playback of animation: " + anim.label);
